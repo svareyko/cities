@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <property name="string.type" value="VARCHAR(255)"/>
+    <property name="boolean.type" value="BIT(1)"/>
+    <property name="date.type" value="TIMESTAMP"/>
+    <property name="long.type" value="BIGINT"/>
+    <property name="int.type" value="INTEGER"/>
+
+    <changeSet id="ADD_ROUTE_TABLE" author="s.vareyko">
+        <createTable tableName="CITY_ROUTE">
+            <column name="id" type="${long.type}" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first" type="${int.type}"/>
+            <column name="second" type="${int.type}"/>
+            <column name="distance" type="${long.type}"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="ADD_INDEXES_FOR_ROUTE_TABLE" author="s.vareyko">
+        <createIndex tableName="CITY_ROUTE" indexName="CITY_ROUTE_CITIES_INDEX">
+            <column name="FIRST"/>
+            <column name="SECOND"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

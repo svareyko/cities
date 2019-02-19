@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="route" type="com.example.cities.dto.CityRouteDto"*/-->
+<!--/*@thymesVar id="paths" type="java.util.Collection<com.example.cities.debug.SpecialResultDto>"*/-->
+<!--/*@thymesVar id="from" type="com.example.cities.enums.City"*/-->
+<!--/*@thymesVar id="to" type="com.example.cities.enums.City"*/-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Cities search</title>
+    <link rel="stylesheet" th:href="@{/css/site.css}"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+</head>
+<body th:with="cities=${T(com.example.cities.enums.City)}">
+<div class="add-form">
+    <h4>Set route</h4>
+    <p>- if route exists for specified cities it's will be overridden</p>
+    <p>- equal city names matches will be ignored</p>
+    <p>- accepted only positive values</p>
+    <form autocomplete="off" action="/add-route" th:object="${route}" method="post">
+        <select th:field="*{first}" title="First City" class="form-control">
+            <option th:each="city:${cities.getAll()}" th:value="${city}" th:text="${city}"></option>
+        </select>
+        <select th:field="*{second}" title="Second City" class="form-control">
+            <option th:each="city:${cities.getAll()}" th:value="${city}" th:text="${city}"></option>
+        </select>
+        <input th:field="*{distance}" placeholder="Distance" type="number"/>
+        <button type="submit">Save</button>
+    </form>
+</div>
+<div class="search-form">
+    <h4>Find route between cities</h4>
+    <form autocomplete="off" action="/search" method="get">
+        <select th:name="from" title="First City" class="form-control">
+            <option th:each="city:${cities.getAll()}" th:value="${city}" th:text="${city}"
+                    th:selected="${city==from}"></option>
+        </select>
+        <select th:name="to" title="Second City" class="form-control">
+            <option th:each="city:${cities.getAll()}" th:value="${city}" th:text="${city}"
+                    th:selected="${city==to}"></option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+</div>
+<div class="results" th:if="${paths != null}" th:with="noResults=${#arrays.isEmpty(paths)}">
+    <th:block th:if="${!noResults}">
+        <p th:text="|All found routes between ${from} and ${to}|"></p>
+        <table width="100%">
+            <thead>
+            <tr>
+                <td>Distance</td>
+                <td>Num Of Cities</td>
+                <td>Path</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="path:${paths}">
+                <td th:text="${path.distance}"></td>
+                <td th:text="${path.results.size()}"></td>
+                <td th:text="${path.path}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+    <p th:if="${noResults}">There are no results, error code sent.</p>
+</div>
+<div>
+    <script th:src="@{/js/site.js}"></script>
+</div>
+</body>
+</html>
